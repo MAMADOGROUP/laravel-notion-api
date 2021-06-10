@@ -33,9 +33,10 @@ class NotionException extends LaravelNotionAPIException
      */
     public static function fromResponse(Response $response): NotionException
     {
+        $previousException = $response->failed() ? new ResponseException($response) : null;
         return new NotionException(
             $response->getReasonPhrase(), 0,
-            $response->toException()
+            $previousException
         );
     }
 
