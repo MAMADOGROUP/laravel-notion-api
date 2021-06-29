@@ -1,5 +1,5 @@
 {
-    "name": "fiveam-code/laravel-notion-api",
+    "name": "mamadogroup/laravel-notion-api",
     "description": "Laravel Wrapper for the Notion API",
     "keywords": [
         "fiveam-code",
@@ -9,7 +9,7 @@
         "notion-api",
         "api-wrapper"
     ],
-    "homepage": "https://github.com/fiveam-code/laravel-notion-api",
+    "homepage": "https://github.com/mamadogroup/laravel-notion-api",
     "license": "MIT",
     "type": "library",
     "authors": [
