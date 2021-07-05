@@ -2,10 +2,12 @@
 
 namespace FiveamCode\LaravelNotionApi\Endpoints;
 
+use FiveamCode\LaravelNotionApi\Entities\Collections\EntityCollection;
 use FiveamCode\LaravelNotionApi\Notion;
 use FiveamCode\LaravelNotionApi\Exceptions\NotionException;
 use FiveamCode\LaravelNotionApi\Exceptions\HandlingException;
 use FiveamCode\LaravelNotionApi\Entities\Collections\BlockCollection;
+use Illuminate\Support\Arr;
 
 /**
  * Class Block
@@ -36,17 +38,22 @@ class Block extends Endpoint
      * url: https://api.notion.com/{version}/blocks/{block_id}/children
      * notion-api-docs: https://developers.notion.com/reference/get-block-children
      *
-     * @return BlockCollection
+     * @return array
      * @throws HandlingException
      * @throws NotionException
      */
-    public function children(): BlockCollection
+    public function children(): array
     {
         $response = $this->get(
             $this->url(Endpoint::BLOCKS . '/' . $this->blockId . '/children' . "?{$this->buildPaginationQuery()}")
         );
 
-        return new BlockCollection($response->json());
+
+        return [
+            'hasMore' => Arr::get($this->response->json(), 'has_more'),
+            'nextCursor' => Arr::get($this->response->json(), 'next_cursor'),
+            'results' => new BlockCollection($response->json())
+        ];
     }
 
     /**

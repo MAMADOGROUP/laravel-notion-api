@@ -6,6 +6,7 @@ use DateTime;
 use Illuminate\Support\Arr;
 use FiveamCode\LaravelNotionApi\Entities\Entity;
 use FiveamCode\LaravelNotionApi\Exceptions\HandlingException;
+use Illuminate\Support\Collection;
 
 /**
  * Class Block
@@ -22,6 +23,11 @@ class Block extends Entity
      * @var bool
      */
     protected bool $hasChildren;
+
+    /**
+     * @var Collection
+     */
+    protected Collection $children;
 
     /**
      * @var array
@@ -47,6 +53,14 @@ class Block extends Entity
      * @var DateTime
      */
     protected DateTime $lastEditedTime;
+
+    public function __construct(array $responseData = null)
+    {
+        parent::__construct($responseData);
+
+        $this->children = new Collection();
+    }
+
 
     /**
      * @param array $responseData
@@ -126,6 +140,17 @@ class Block extends Entity
     public function hasChildren(): bool
     {
         return $this->hasChildren;
+    }
+
+    public function appendChildren(Collection $children)
+    {
+//        if (! $this->children) {
+//            $this->children = new Collection();
+//        }
+
+        $this->children = $this->children->concat($children);
+
+        return $this;
     }
 
     /**

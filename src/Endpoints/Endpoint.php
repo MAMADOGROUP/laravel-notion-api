@@ -7,6 +7,7 @@ use FiveamCode\LaravelNotionApi\Notion;
 use FiveamCode\LaravelNotionApi\Query\StartCursor;
 use FiveamCode\LaravelNotionApi\Exceptions\NotionException;
 use FiveamCode\LaravelNotionApi\Exceptions\HandlingException;
+use Illuminate\Support\Arr;
 
 /**
  * Class Endpoint
@@ -163,14 +164,13 @@ class Endpoint
     }
 
     /**
-     * @param StartCursor $startCursor
+     * @param string $startCursor
      * @return Endpoint
-     * @throws HandlingException
      */
-    public function offset(StartCursor $startCursor): Endpoint
+    public function offset(string $startCursor): Endpoint
     {
-        // toDo
-        throw HandlingException::instance('Not implemented yet.', compact($startCursor));
-    }
+        $this->startCursor = new StartCursor($startCursor);
 
+        return $this;
+    }
 }
