@@ -1,24 +1,31 @@
 <h1 align="center"> Laravel Notion API</h1>
-<h2 align="center"> Effortless Notion integrations with Laravel</h2>
 
-<p align="center">
-<img src="https://5amco.de/images/5am.png" width="200" height="200">
-</p>
+## Примечание
 
-[![Latest Version on Packagist](https://img.shields.io/packagist/v/fiveam-code/laravel-notion-api.svg?style=flat-square)](https://packagist.org/packages/fiveam-code/laravel-notion-api)
-[![Total Downloads](https://img.shields.io/packagist/dt/fiveam-code/laravel-notion-api.svg?style=flat-square)](https://packagist.org/packages/fiveam-code/laravel-notion-api)
+Пакет модифицирован, относительно базового пакета `5am-code/laravel-notion-api`  
+Добавлена поддержка children в блоках.  
+Управление загрузкой children осуществляется вне библиотеки.  
+Пример реализации находится в  `examples\NotionService.php`
 
-[comment]: <> (![GitHub Actions]&#40;https://github.com/fiveam-code/laravel-notion-api/actions/workflows/main.yml/badge.svg&#41;)
+## Установка
 
-This package provides a simple and crisp way to access the Notion API endpoints, query data and update existing entries.
+Необходимо добавить в composer.json репозиторий:
+```json
+  "repositories": [
+    {
+      "type": "vcs",
+      "url": "git@github.com:famiryru/laravel-notion-api.git"
+    }
+  ]
+```
 
-## Installation
-
-You can install the package via composer:
+После этого установить пакет с помощью composer:
 
 ```bash
-composer require fiveam-code/laravel-notion-api
+composer require mamadogroup/laravel-notion-api
 ```
+
+> Ниже официальная документация пакета.
 
 ### Authorization
 
