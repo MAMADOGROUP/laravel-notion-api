@@ -2,13 +2,11 @@
 
 namespace FiveamCode\LaravelNotionApi\Entities\Collections;
 
-use Illuminate\Support\Collection;
 use FiveamCode\LaravelNotionApi\Entities\User;
-
+use Illuminate\Support\Collection;
 
 /**
- * Class UserCollection
- * @package FiveamCode\LaravelNotionApi\Entities\Collections
+ * Class UserCollection.
  */
 class UserCollection extends EntityCollection
 {

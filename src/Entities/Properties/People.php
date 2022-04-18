@@ -8,8 +8,7 @@ use FiveamCode\LaravelNotionApi\Exceptions\HandlingException;
 use Illuminate\Support\Collection;
 
 /**
- * Class People
- * @package FiveamCode\LaravelNotionApi\Entities\Properties
+ * Class People.
  */
 class People extends Property implements Modifiable
 {
@@ -23,8 +22,8 @@ class People extends Property implements Modifiable
         $peopleProperty->content = new Collection();
         $peopleProperty->rawContent = ['people' => []];
 
-        foreach($userIds as $userId){
-            array_push($peopleProperty->rawContent['people'], ['object' => 'user', 'id' => $userId]); 
+        foreach ($userIds as $userId) {
+            array_push($peopleProperty->rawContent['people'], ['object' => 'user', 'id' => $userId]);
             $peopleProperty->content->add(new User(['object' => 'user', 'id' => $userId]));
         }
 
@@ -37,8 +36,9 @@ class People extends Property implements Modifiable
     protected function fillFromRaw(): void
     {
         parent::fillFromRaw();
-        if (!is_array($this->rawContent))
+        if (! is_array($this->rawContent)) {
             throw HandlingException::instance('The property-type is people, however the raw data-structure does not reprecent this type (= array of items). Please check the raw response-data.');
+        }
 
         $this->content = new Collection();
         foreach ($this->rawContent as $peopleItem) {

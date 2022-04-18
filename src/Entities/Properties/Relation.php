@@ -6,8 +6,7 @@ use FiveamCode\LaravelNotionApi\Entities\Contracts\Modifiable;
 use Illuminate\Support\Collection;
 
 /**
- * Class Relation
- * @package FiveamCode\LaravelNotionApi\Entities\Properties
+ * Class Relation.
  */
 class Relation extends Property implements Modifiable
 {
@@ -21,7 +20,7 @@ class Relation extends Property implements Modifiable
         $relationProperty->content = new Collection();
         $relationProperty->rawContent = ['relation' => []];
 
-        foreach($relationIds as $relationId){
+        foreach ($relationIds as $relationId) {
             array_push($relationProperty->rawContent['relation'], ['id' => $relationId]);
             $relationProperty->content->add($relationId);
         }
@@ -29,23 +28,16 @@ class Relation extends Property implements Modifiable
         return $relationProperty;
     }
 
-
-    /**
-     *
-     */
     protected function fillFromRaw(): void
     {
         parent::fillFromRaw();
         $this->fillRelation();
     }
 
-    /**
-     *
-     */
     protected function fillRelation(): void
     {
         $this->content = new Collection();
-        foreach($this->rawContent as $relationId){
+        foreach ($this->rawContent as $relationId) {
             $this->content->add($relationId);
         }
     }

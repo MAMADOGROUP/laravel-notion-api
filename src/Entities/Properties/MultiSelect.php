@@ -3,16 +3,21 @@
 namespace FiveamCode\LaravelNotionApi\Entities\Properties;
 
 use FiveamCode\LaravelNotionApi\Entities\Contracts\Modifiable;
-use Illuminate\Support\Collection;
-use FiveamCode\LaravelNotionApi\Exceptions\HandlingException;
 use FiveamCode\LaravelNotionApi\Entities\PropertyItems\SelectItem;
+use FiveamCode\LaravelNotionApi\Exceptions\HandlingException;
+use Illuminate\Support\Arr;
+use Illuminate\Support\Collection;
 
 /**
- * Class MultiSelect
- * @package FiveamCode\LaravelNotionApi\Entities\Properties
+ * Class MultiSelect.
  */
 class MultiSelect extends Property implements Modifiable
 {
+    /**
+     * @var Collection
+     */
+    private Collection $options;
+
     /**
      * @param $names
      * @return MultiSelect
@@ -23,18 +28,18 @@ class MultiSelect extends Property implements Modifiable
         $multiSelectRawContent = [];
         $selectItemCollection = new Collection();
 
-        foreach($names as $name){
+        foreach ($names as $name) {
             $selectItem = new SelectItem();
             $selectItem->setName($name);
             $selectItemCollection->add($selectItem);
             array_push($multiSelectRawContent, [
-                "name" => $selectItem->getName()
+                'name' => $selectItem->getName(),
             ]);
         }
 
         $multiSelectProperty->content = $selectItemCollection;
         $multiSelectProperty->rawContent = [
-            "multi_select" => $multiSelectRawContent
+            'multi_select' => $multiSelectRawContent,
         ];
 
         return $multiSelectProperty;
@@ -46,13 +51,21 @@ class MultiSelect extends Property implements Modifiable
     protected function fillFromRaw(): void
     {
         parent::fillFromRaw();
-        if (!is_array($this->rawContent))
+        if (! is_array($this->rawContent)) {
             throw HandlingException::instance('The property-type is multi_select, however the raw data-structure does not represent this type (= array of items). Please check the raw response-data.');
+        }
 
         $itemCollection = new Collection();
 
-        foreach ($this->rawContent as $item) {
-            $itemCollection->add(new SelectItem($item));
+        if (Arr::exists($this->rawContent, 'options')) {
+            $this->options = new Collection();
+            foreach ($this->rawContent['options'] as $key => $item) {
+                $this->options->add(new SelectItem($item));
+            }
+        } else {
+            foreach ($this->rawContent as $key => $item) {
+                $itemCollection->add(new SelectItem($item));
+            }
         }
 
         $this->content = $itemCollection;
@@ -75,6 +88,14 @@ class MultiSelect extends Property implements Modifiable
     }
 
     /**
+     * @return Collection
+     */
+    public function getOptions(): Collection
+    {
+        return $this->options;
+    }
+
+    /**
      * @return array
      */
     public function getNames(): array
@@ -83,6 +104,7 @@ class MultiSelect extends Property implements Modifiable
         foreach ($this->getItems() as $item) {
             array_push($names, $item->getName());
         }
+
         return $names;
     }
 
@@ -95,6 +117,7 @@ class MultiSelect extends Property implements Modifiable
         foreach ($this->getItems() as $item) {
             array_push($colors, $item->getColor());
         }
+
         return $colors;
     }
 }

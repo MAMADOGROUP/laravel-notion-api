@@ -2,13 +2,12 @@
 
 namespace FiveamCode\LaravelNotionApi\Entities\PropertyItems;
 
-use Illuminate\Support\Arr;
 use FiveamCode\LaravelNotionApi\Entities\Entity;
 use FiveamCode\LaravelNotionApi\Exceptions\HandlingException;
+use Illuminate\Support\Arr;
 
 /**
- * Class SelectItem
- * @package FiveamCode\LaravelNotionApi\Entities\PropertyItems
+ * Class SelectItem.
  */
 class SelectItem extends Entity
 {
@@ -21,21 +20,20 @@ class SelectItem extends Entity
      */
     protected string $name;
 
-
     /**
-     * @param array $responseData
+     * @param  array  $responseData
+     *
      * @throws HandlingException
      */
     protected function setResponseData(array $responseData): void
     {
-        if (!Arr::exists($responseData, 'id')) throw HandlingException::instance('invalid json-array: no id provided');
+        if (! Arr::exists($responseData, 'id')) {
+            throw HandlingException::instance('invalid json-array: no id provided');
+        }
         $this->responseData = $responseData;
         $this->fillFromRaw();
     }
 
-    /**
-     *
-     */
     protected function fillFromRaw(): void
     {
         $this->fillId();
@@ -43,25 +41,19 @@ class SelectItem extends Entity
         $this->fillColor();
     }
 
-
-    /**
-     *
-     */
-    protected function fillName():void{
+    protected function fillName(): void
+    {
         if (Arr::exists($this->responseData, 'name')) {
             $this->name = $this->responseData['name'];
         }
     }
 
-    /**
-     *
-     */
-    protected function fillColor():void{
+    protected function fillColor(): void
+    {
         if (Arr::exists($this->responseData, 'color')) {
             $this->color = $this->responseData['color'];
         }
     }
-
 
     /**
      * @return string
@@ -78,8 +70,6 @@ class SelectItem extends Entity
     {
         return $this->name;
     }
-
-
 
     /**
      * @param $color

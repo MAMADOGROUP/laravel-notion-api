@@ -5,12 +5,11 @@ namespace FiveamCode\LaravelNotionApi\Entities\Properties;
 use DateTime;
 use FiveamCode\LaravelNotionApi\Entities\PropertyItems\RichDate;
 use FiveamCode\LaravelNotionApi\Exceptions\HandlingException;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Str;
 
 /**
- * Class Rollup
- * @package FiveamCode\LaravelNotionApi\Entities\Properties
+ * Class Rollup.
  */
 class Rollup extends Property
 {
@@ -23,20 +22,22 @@ class Rollup extends Property
     {
         parent::fillFromRaw();
 
-        $this->rollupType = $this->rawContent['type'];
+        if (Arr::exists($this->rawContent, 'type')) {
+            $this->rollupType = $this->rawContent['type'];
 
-        switch ($this->rollupType) {
-            case 'number':
-                $this->setRollupContentNumber();
-                break;
-            case 'array':
-                $this->setRollupContentArray();
-                break;
-            case 'date':
-                $this->setRollupContentDate();
-                break;
-            default:
-                throw new HandlingException("Unexpected rollupType {$this->rollupType}");
+            switch ($this->rollupType) {
+                case 'number':
+                    $this->setRollupContentNumber();
+                    break;
+                case 'array':
+                    $this->setRollupContentArray();
+                    break;
+                case 'date':
+                    $this->setRollupContentDate();
+                    break;
+                default:
+                    throw new HandlingException("Unexpected rollupType {$this->rollupType}");
+        }
         }
     }
 
@@ -64,15 +65,16 @@ class Rollup extends Property
         if ($this->getContent() instanceof Collection) {
             $firstItem = $this->getContent()->first();
 
-            # if rollup is empty, there is no type
-            if ($firstItem == null) return null;
+            // if rollup is empty, there is no type
+            if ($firstItem == null) {
+                return null;
+            }
 
             return $firstItem->getType();
         } else {
             return $this->getRollupType();
         }
     }
-
 
     private function setRollupContentNumber()
     {
@@ -88,7 +90,7 @@ class Rollup extends Property
             $rollupPropertyItem['id'] = 'undefined';
 
             $this->content->add(
-                Property::fromResponse("", $rollupPropertyItem)
+                Property::fromResponse('', $rollupPropertyItem)
             );
         }
     }

@@ -2,16 +2,14 @@
 
 namespace FiveamCode\LaravelNotionApi\Endpoints;
 
-use Illuminate\Http\Client\Response;
+use FiveamCode\LaravelNotionApi\Exceptions\HandlingException;
+use FiveamCode\LaravelNotionApi\Exceptions\NotionException;
 use FiveamCode\LaravelNotionApi\Notion;
 use FiveamCode\LaravelNotionApi\Query\StartCursor;
-use FiveamCode\LaravelNotionApi\Exceptions\NotionException;
-use FiveamCode\LaravelNotionApi\Exceptions\HandlingException;
-use Illuminate\Support\Arr;
+use Illuminate\Http\Client\Response;
 
 /**
- * Class Endpoint
- * @package FiveamCode\LaravelNotionApi\Endpoints
+ * Class Endpoint.
  */
 class Endpoint
 {
@@ -44,7 +42,9 @@ class Endpoint
 
     /**
      * Endpoint constructor.
-     * @param Notion $notion
+     *
+     * @param  Notion  $notion
+     *
      * @throws HandlingException
      */
     public function __construct(Notion $notion)
@@ -56,35 +56,34 @@ class Endpoint
         }
     }
 
-
     /**
-     *
-     * @param string $endpoint
+     * @param  string  $endpoint
      * @return string
      */
     protected function url(string $endpoint): string
     {
-        return Endpoint::BASE_URL . "{$this->notion->getVersion()}/{$endpoint}";
+        return Endpoint::BASE_URL."{$this->notion->getVersion()}/{$endpoint}";
     }
 
-
     /**
-     *
-     * @param string $url
+     * @param  string  $url
      * @return array
+     *
      * @throws NotionException|HandlingException
      */
     protected function getJson(string $url): array
     {
-        if ($this->response === null)
+        if ($this->response === null) {
             $this->get($url);
+        }
 
         return $this->response->json();
     }
 
     /**
-     * @param string $url
+     * @param  string  $url
      * @return Response
+     *
      * @throws NotionException
      * @throws HandlingException
      */
@@ -92,17 +91,20 @@ class Endpoint
     {
         $response = $this->notion->getConnection()->get($url);
 
-        if ($response->failed())
+        if ($response->failed()) {
             throw NotionException::fromResponse($response);
+        }
 
         $this->response = $response;
+
         return $response;
     }
 
     /**
-     * @param string $url
-     * @param array $body
+     * @param  string  $url
+     * @param  array  $body
      * @return Response
+     *
      * @throws HandlingException
      * @throws NotionException
      */
@@ -110,17 +112,20 @@ class Endpoint
     {
         $response = $this->notion->getConnection()->post($url, $body);
 
-        if ($response->failed())
+        if ($response->failed()) {
             throw NotionException::fromResponse($response);
+        }
 
         $this->response = $response;
+
         return $response;
     }
 
     /**
-     * @param string $url
-     * @param array $body
+     * @param  string  $url
+     * @param  array  $body
      * @return Response
+     *
      * @throws HandlingException
      * @throws NotionException
      */
@@ -128,13 +133,14 @@ class Endpoint
     {
         $response = $this->notion->getConnection()->patch($url, $body);
 
-        if ($response->failed())
+        if ($response->failed()) {
             throw NotionException::fromResponse($response);
+        }
 
         $this->response = $response;
+
         return $response;
     }
-
 
     /**
      * @return string
@@ -143,17 +149,19 @@ class Endpoint
     {
         $paginationQuery = '';
 
-        if ($this->pageSize !== null)
+        if ($this->pageSize !== null) {
             $paginationQuery = "page_size={$this->pageSize}&";
+        }
 
-        if ($this->startCursor !== null)
+        if ($this->startCursor !== null) {
             $paginationQuery .= "start_cursor={$this->startCursor}";
+        }
 
         return $paginationQuery;
     }
 
     /**
-     * @param int $limit
+     * @param  int  $limit
      * @return $this
      */
     public function limit(int $limit): Endpoint
@@ -164,12 +172,14 @@ class Endpoint
     }
 
     /**
-     * @param string $startCursor
+     * @param  StartCursor  $startCursor
      * @return Endpoint
+     *
+     * @throws HandlingException
      */
-    public function offset(string $startCursor): Endpoint
+    public function offset(StartCursor $startCursor): Endpoint
     {
-        $this->startCursor = new StartCursor($startCursor);
+        $this->startCursor = $startCursor;
 
         return $this;
     }

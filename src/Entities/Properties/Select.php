@@ -3,15 +3,19 @@
 namespace FiveamCode\LaravelNotionApi\Entities\Properties;
 
 use FiveamCode\LaravelNotionApi\Entities\Contracts\Modifiable;
-use FiveamCode\LaravelNotionApi\Exceptions\HandlingException;
 use FiveamCode\LaravelNotionApi\Entities\PropertyItems\SelectItem;
+use FiveamCode\LaravelNotionApi\Exceptions\HandlingException;
+use Illuminate\Support\Collection;
 
 /**
- * Class Select
- * @package FiveamCode\LaravelNotionApi\Entities\Properties
+ * Class Select.
  */
 class Select extends Property implements Modifiable
 {
+    /**
+     * @var Collection
+     */
+    private Collection $options;
 
     /**
      * @param $name
@@ -26,9 +30,9 @@ class Select extends Property implements Modifiable
         $selectProperty->content = $selectItem;
 
         $selectProperty->rawContent = [
-            "select" => [
-                "name" => $selectItem->getName()
-            ]
+            'select' => [
+                'name' => $selectItem->getName(),
+            ],
         ];
 
         return $selectProperty;
@@ -40,10 +44,20 @@ class Select extends Property implements Modifiable
     protected function fillFromRaw(): void
     {
         parent::fillFromRaw();
-        if (!is_array($this->rawContent))
+        if (! is_array($this->rawContent)) {
             throw HandlingException::instance('The property-type is select, however the raw data-structure does not reprecent this type. Please check the raw response-data.');
+        }
 
-        $this->content = new SelectItem($this->rawContent);
+        if (array_key_exists('options', $this->rawContent)) {
+            $this->options = new Collection();
+            foreach ($this->rawContent['options'] as $key => $item) {
+                $this->options->add(new SelectItem($item));
+            }
+        } else {
+            foreach ($this->rawContent as $key => $item) {
+                $this->content = new SelectItem($this->rawContent);
+            }
+        }
     }
 
     /**
@@ -60,6 +74,14 @@ class Select extends Property implements Modifiable
     public function getItem(): SelectItem
     {
         return $this->content;
+    }
+
+    /**
+     * @return Collection
+     */
+    public function getOptions(): Collection
+    {
+        return $this->options;
     }
 
     /**
