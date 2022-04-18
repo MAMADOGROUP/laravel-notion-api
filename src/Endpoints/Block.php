@@ -7,6 +7,7 @@ use FiveamCode\LaravelNotionApi\Entities\Collections\BlockCollection;
 use FiveamCode\LaravelNotionApi\Exceptions\HandlingException;
 use FiveamCode\LaravelNotionApi\Exceptions\NotionException;
 use FiveamCode\LaravelNotionApi\Notion;
+use Illuminate\Support\Arr;
 
 /**
  * Class Block.
@@ -81,9 +82,11 @@ class Block extends Endpoint
      * url: https://api.notion.com/{version}/blocks/{block_id}/children [patch]
      * notion-api-docs: https://developers.notion.com/reference/patch-block-children.
      *
-     * @return FiveamCode\LaravelNotionApi\Entities\Blocks\Block
+     * @param $appendices
+     * @return BlockEntity
      *
      * @throws HandlingException
+     * @throws NotionException
      */
     public function append($appendices): BlockEntity
     {
@@ -121,9 +124,11 @@ class Block extends Endpoint
      * url: https://api.notion.com/{version}/blocks/{block_id} [patch]
      * notion-api-docs: https://developers.notion.com/reference/update-a-block.
      *
-     * @return FiveamCode\LaravelNotionApi\Entities\Blocks\Block
+     * @param BlockEntity $block
+     * @return BlockEntity
      *
      * @throws HandlingException
+     * @throws NotionException
      */
     public function update(BlockEntity $block): BlockEntity
     {
